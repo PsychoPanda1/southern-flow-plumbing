@@ -100,8 +100,33 @@ h3 { margin-bottom: 12px; color: var(--navy); font-family: var(--serif); font-si
 .promise-copy { display: flex; flex-direction: column; justify-content: center; padding: 90px max(48px, calc((100vw - 1180px) / 2)); color: rgba(255,255,255,.73); }
 .promise-copy h2 { color: #fff; font-size: clamp(2.2rem, 4vw, 3.9rem); }
 .promise-copy p:not(.eyebrow) { max-width: 550px; }
+.promise-copy p + p { margin-top: 6px; }
 .signature { display: flex; align-items: center; gap: 16px; margin-top: 30px; color: #fff; font-size: .76rem; letter-spacing: .14em; text-transform: uppercase; }
 .signature-line { width: 42px; height: 1px; background: var(--sky); }
+
+.service-area { background: var(--cream); }
+.area-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: 100px; align-items: center; }
+.area-copy > p:not(.eyebrow) { max-width: 520px; margin-bottom: 30px; color: var(--muted); }
+.area-list { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); }
+.area-list span { position: relative; padding: 21px 22px 21px 36px; border-bottom: 1px solid var(--line); color: var(--navy); font-family: var(--serif); font-size: 1.04rem; }
+.area-list span:nth-child(odd) { border-right: 1px solid var(--line); }
+.area-list span::before { content: ""; position: absolute; left: 12px; top: 50%; width: 8px; height: 8px; background: var(--sky); border-radius: 50%; transform: translateY(-50%); }
+
+.reviews { color: rgba(255,255,255,.76); background: var(--navy-soft); }
+.reviews-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 100px; align-items: start; }
+.reviews h2 { max-width: 480px; margin-bottom: 0; color: #fff; }
+.review-status { padding: 40px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.05); }
+.review-status h3 { margin-bottom: 14px; color: #fff; font-size: 1.55rem; }
+.review-status p { max-width: 610px; margin-bottom: 26px; }
+.review-kicker { display: inline-block; margin-bottom: 24px; padding: 7px 10px; color: #e9bf73; border: 1px solid rgba(233,191,115,.5); font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.review-actions { display: flex; flex-wrap: wrap; gap: 26px; }
+
+.credentials { padding-top: 86px; padding-bottom: 20px; }
+.credentials-card { display: grid; grid-template-columns: auto 1fr auto; gap: 34px; align-items: center; padding: 42px 48px; border: 1px solid var(--line); background: #fff; box-shadow: 0 18px 50px rgba(7,35,61,.06); }
+.credential-mark { display: grid; place-items: center; width: 68px; height: 68px; color: #fff; background: var(--navy); border: 6px solid #d5edf6; border-radius: 50%; font-family: var(--serif); font-size: 1.55rem; }
+.credentials-card .eyebrow { margin-bottom: 8px; }
+.credentials-card h2 { margin-bottom: 8px; font-size: clamp(2rem, 3vw, 3rem); }
+.credentials-card p:last-child { max-width: 650px; margin-bottom: 0; color: var(--muted); }
 
 .contact { text-align: center; }
 .contact-inner { max-width: 880px; }
@@ -139,6 +164,9 @@ footer { padding: 54px 0 28px; color: rgba(255,255,255,.65); background: #031727
   .promise-grid { grid-template-columns: 1fr; }
   .promise-image-wrap { min-height: 500px; }
   .promise-copy { padding: 90px 48px; }
+  .area-grid, .reviews-grid { grid-template-columns: 1fr; gap: 45px; }
+  .credentials-card { grid-template-columns: auto 1fr; }
+  .credentials-card > .text-link { grid-column: 2; }
 }
 
 @media (max-width: 620px) {
@@ -163,6 +191,13 @@ footer { padding: 54px 0 28px; color: rgba(255,255,255,.65); background: #031727
   .gallery figure { height: 390px; margin-bottom: 14px; }
   .promise-image-wrap { min-height: 390px; }
   .promise-copy { padding: 74px 24px; }
+  .area-list { grid-template-columns: 1fr; }
+  .area-list span:nth-child(odd) { border-right: 0; }
+  .review-status { padding: 30px 24px; }
+  .review-actions { align-items: flex-start; flex-direction: column; }
+  .credentials { padding-top: 58px; }
+  .credentials-card { grid-template-columns: 1fr; padding: 34px 26px; }
+  .credentials-card > .text-link { grid-column: auto; }
   .footer-inner { grid-template-columns: 1fr; text-align: left; }
   .footer-links { text-align: left; }
 }
