@@ -30,3 +30,16 @@ document.addEventListener("click", (event) => {
 
 const year = document.querySelector("#year");
 if (year) year.textContent = new Date().getFullYear();
+
+const copyPhoneButton = document.querySelector("[data-copy-phone]");
+const copyStatus = document.querySelector(".copy-status");
+
+copyPhoneButton?.addEventListener("click", async () => {
+  const phoneNumber = copyPhoneButton.getAttribute("data-copy-phone") ?? "";
+  try {
+    await navigator.clipboard.writeText(phoneNumber);
+    if (copyStatus) copyStatus.textContent = "Phone number copied.";
+  } catch {
+    if (copyStatus) copyStatus.textContent = `Call ${phoneNumber} for a free estimate.`;
+  }
+});
