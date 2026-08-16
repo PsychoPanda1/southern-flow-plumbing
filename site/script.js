@@ -31,6 +31,22 @@ document.addEventListener("click", (event) => {
 const year = document.querySelector("#year");
 if (year) year.textContent = new Date().getFullYear();
 
+const mobileCallQuery = window.matchMedia("(max-width: 620px)");
+const mobileCallLinks = document.querySelectorAll("[data-mobile-call]");
+
+const syncMobileCallLinks = () => {
+  mobileCallLinks.forEach((link) => {
+    const mobileHref = link.getAttribute("data-mobile-call");
+    if (!link.hasAttribute("data-desktop-href")) {
+      link.setAttribute("data-desktop-href", link.getAttribute("href") ?? "#estimate");
+    }
+    link.setAttribute("href", mobileCallQuery.matches && mobileHref ? mobileHref : link.getAttribute("data-desktop-href"));
+  });
+};
+
+syncMobileCallLinks();
+mobileCallQuery.addEventListener("change", syncMobileCallLinks);
+
 const copyPhoneButton = document.querySelector("[data-copy-phone]");
 const copyStatus = document.querySelector(".copy-status");
 
