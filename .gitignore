@@ -1,0 +1,5 @@
+.pnpm-store/
+site/node_modules/
+site/.next/
+site/dist/
+*.log
