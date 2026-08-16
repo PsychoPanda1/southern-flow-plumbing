@@ -10,6 +10,8 @@
     <link rel="icon" type="image/png" href="public/southern-flow-emblem-badge.png" />
     <link rel="apple-touch-icon" href="public/southern-flow-emblem-badge.png" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Southern Flow Plumbing" />
     <meta property="og:title" content="Southern Flow Plumbing | Charleston, SC" />
     <meta property="og:description" content="Service repairs, historic renovations, custom-home plumbing, water heaters, filtration, and leak protection across Charleston and the Lowcountry." />
     <meta property="og:url" content="https://southernflowplumbingllc.com/" />
@@ -31,23 +33,30 @@
       {
         "@context": "https://schema.org",
         "@type": "Plumber",
+        "@id": "https://southernflowplumbingllc.com/#business",
         "name": "Southern Flow Plumbing",
         "description": "Plumbing service, repair, historic renovation, custom construction, water-heater, filtration, and leak-protection work across Charleston and the Lowcountry.",
         "url": "https://southernflowplumbingllc.com/",
         "telephone": "+1-843-793-8806",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+1-843-793-8806",
+          "contactType": "estimates and customer service",
+          "availableLanguage": "English"
+        },
         "logo": "https://southernflowplumbingllc.com/public/southern-flow-emblem-badge.png",
         "image": "https://southernflowplumbingllc.com/public/hero-charleston-home-1600.jpg",
         "sameAs": ["https://www.instagram.com/southern_flow_plumbing/"],
         "areaServed": [
-          "Charleston, SC",
-          "James Island, SC",
-          "Sullivan's Island, SC",
-          "Daniel Island, SC",
-          "Kiawah Island, SC",
-          "Seabrook Island, SC",
-          "Edisto Beach, SC",
-          "Beaufort, SC",
-          "Meggett, SC"
+          { "@type": "Place", "name": "Charleston, South Carolina" },
+          { "@type": "Place", "name": "James Island, South Carolina" },
+          { "@type": "Place", "name": "Sullivan's Island, South Carolina" },
+          { "@type": "Place", "name": "Daniel Island, South Carolina" },
+          { "@type": "Place", "name": "Kiawah Island, South Carolina" },
+          { "@type": "Place", "name": "Seabrook Island, South Carolina" },
+          { "@type": "Place", "name": "Edisto Beach, South Carolina" },
+          { "@type": "Place", "name": "Beaufort, South Carolina" },
+          { "@type": "Place", "name": "Meggett, South Carolina" }
         ],
         "serviceType": [
           "Plumbing service and repair",
