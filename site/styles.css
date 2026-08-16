@@ -18,6 +18,7 @@ body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(
 img { display: block; width: 100%; }
 a { color: inherit; }
 button { font: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 6px #176b91; }
 .shell { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
 .section { padding: 110px 0; }
 .skip-link { position: fixed; left: 16px; top: -80px; z-index: 100; padding: 10px 16px; background: #fff; color: var(--navy); }
@@ -36,7 +37,7 @@ button { font: inherit; }
 .site-nav > a { text-decoration: none; font-size: .88rem; font-weight: 600; }
 .site-nav > a:not(.button) { position: relative; }
 .site-nav > a:not(.button)::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -7px; height: 1px; background: var(--sky); transition: right .25s ease; }
-.site-nav > a:not(.button):hover::after { right: 0; }
+.site-nav > a:not(.button):hover::after, .site-nav > a:not(.button):focus-visible::after { right: 0; }
 .menu-button { display: none; background: transparent; border: 0; padding: 8px; }
 .menu-button span:not(.sr-only) { display: block; width: 24px; height: 2px; margin: 5px 0; background: currentColor; }
 
@@ -46,7 +47,7 @@ button { font: inherit; }
 .button-small { min-height: 42px; padding: 0 18px; }
 .text-link { display: inline-flex; gap: 12px; align-items: center; color: var(--navy); text-decoration: none; font-size: .83rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
 .text-link span { transition: transform .2s ease; }
-.text-link:hover span { transform: translateX(5px); }
+.text-link:hover span, .text-link:focus-visible span { transform: translateX(5px); }
 .light-link { color: #fff; }
 .eyebrow { margin: 0 0 18px; color: var(--brass); font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
 .eyebrow.light { color: #b8e1f1; }
@@ -247,4 +248,8 @@ footer { padding: 54px 0 28px; color: rgba(255,255,255,.65); background: #031727
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+@media (forced-colors: active) {
+  a:focus-visible, button:focus-visible { outline: 3px solid CanvasText; box-shadow: none; }
 }
