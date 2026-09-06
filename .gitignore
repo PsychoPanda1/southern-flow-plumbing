@@ -3,3 +3,34 @@ site/node_modules/
 site/.next/
 site/dist/
 *.log
+
+# Local source archive and owner reports (never deploy these).
+/instagram_archive/
+/output/
+/tmp/
+/build/
+__pycache__/
+
+# Retained, unused Sites starter. Production is site/index.html.
+/site/.gitignore
+/site/.openai/
+/site/README.md
+/site/app/
+/site/db/
+/site/drizzle/
+/site/examples/
+/site/tests/
+/site/worker/
+/site/drizzle.config.ts
+/site/eslint.config.mjs
+/site/next-env.d.ts
+/site/next.config.ts
+/site/package-lock.json
+/site/package.json
+/site/postcss.config.mjs
+/site/tsconfig.json
+/site/vite.config.ts
+/site/public/file.svg
+/site/public/globe.svg
+/site/public/window.svg
+/site/public/toilet-service.jpg
