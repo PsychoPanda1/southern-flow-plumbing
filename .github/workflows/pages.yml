@@ -26,6 +26,8 @@ jobs:
           python-version: '3.12'
       - name: Check JavaScript syntax
         run: node --check site/script.js
+      - name: Check menu and contact interactions
+        run: node --test tests/site-interactions.test.mjs
       - name: Check deployment guardrails
         run: python -m unittest discover -s tests
       - name: Validate and package public files

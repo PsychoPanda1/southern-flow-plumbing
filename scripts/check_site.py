@@ -11,7 +11,12 @@ import xml.etree.ElementTree as ET
 
 ORIGIN = "https://southernflowplumbingllc.com"
 PHONE = "tel:+18437938806"
-ENTRIES = ("index.html", "404.html", "robots.txt", "sitemap.xml", "CNAME", ".nojekyll")
+INDEXABLE_ROUTES = {
+    "/": "index.html",
+    "/services/water-heaters/": "services/water-heaters/index.html",
+    "/services/renovations/": "services/renovations/index.html",
+}
+ENTRIES = (*INDEXABLE_ROUTES.values(), "404.html", "robots.txt", "sitemap.xml", "CNAME", ".nojekyll")
 ASSET_TYPES = {".html", ".css", ".js", ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico", ".woff", ".woff2"}
 
 
@@ -20,10 +25,34 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.ids, self.refs, self.errors, self.meta = set(), [], [], {}
         self.canonical = None
+        self.title_parts, self.links, self.assets = [], [], []
+        self.in_title, self.h1_count = False, 0
         self.feed(source)
+
+    @property
+    def title(self):
+        return "".join(self.title_parts).strip()
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.title_parts.append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "title":
+            self.in_title = False
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "title":
+            self.in_title = True
+        if tag == "h1":
+            self.h1_count += 1
+        if tag == "a" and attrs.get("href"):
+            self.links.append(attrs["href"])
+        if tag in {"img", "script", "source"} and attrs.get("src"):
+            self.assets.append(attrs["src"])
+        if tag == "link" and attrs.get("rel") == "stylesheet":
+            self.assets.append(attrs.get("href", ""))
         if attrs.get("id"):
             if attrs["id"] in self.ids:
                 self.errors.append(f"Duplicate id: {attrs['id']}")
@@ -110,14 +139,46 @@ def inspect_site(site):
 
     for entry in ENTRIES:
         visit(site / entry)
-    home = pages.get(site / "index.html")
-    if home:
-        if home.canonical != ORIGIN + "/":
-            errors.append("Incorrect or missing homepage canonical URL")
-        if "noindex" in home.meta.get("robots", "").lower():
-            errors.append("Homepage must not be marked noindex")
-        if not home.meta.get("description") or not home.meta.get("og:image"):
-            errors.append("Homepage description or social-preview image is missing")
+    titles, descriptions = set(), set()
+    for route, relative in INDEXABLE_ROUTES.items():
+        page = pages.get(site / relative)
+        if not page:
+            continue  # Missing file already reported during traversal.
+        if page.canonical != ORIGIN + route:
+            errors.append(f"Incorrect or missing canonical URL: {route}")
+        if "noindex" in page.meta.get("robots", "").lower():
+            errors.append(f"Indexable page must not be marked noindex: {route}")
+        if not page.title or page.title in titles:
+            errors.append(f"Missing or duplicate page title: {route}")
+        titles.add(page.title)
+        description = page.meta.get("description")
+        if not description or description in descriptions:
+            errors.append(f"Missing or duplicate page description: {route}")
+        descriptions.add(description)
+        if page.h1_count != 1:
+            errors.append(f"Page must have exactly one h1: {route}")
+        if page.meta.get("og:url") != ORIGIN + route or not page.meta.get("og:image"):
+            errors.append(f"Missing or mismatched social metadata: {route}")
+        if route != "/" and any(not ref.startswith(("/", "https:", "data:")) for ref in page.assets):
+            errors.append(f"Nested page assets must use root-relative or HTTPS URLs: {route}")
+
+    # Reachability uses actual navigation links, never canonical/social metadata.
+    reachable, pending = set(), [site / "index.html"]
+    while pending:
+        current = pending.pop()
+        if current in reachable or current not in pages:
+            continue
+        reachable.add(current)
+        for ref in pages[current].links:
+            target = local_file(ref, current)
+            if target in pages and target not in reachable:
+                pending.append(target)
+    for route, relative in INDEXABLE_ROUTES.items():
+        if site / relative not in reachable:
+            errors.append(f"Indexable page is not reachable from homepage links: {route}")
+    declared_html = {site / file for file in INDEXABLE_ROUTES.values()} | {site / "404.html"}
+    for file in pages.keys() - declared_html:
+        errors.append(f"Undeclared public HTML page: {file.relative_to(site)}")
     error_page = pages.get(site / "404.html")
     if error_page and "noindex" not in error_page.meta.get("robots", ""):
         errors.append("Error page must be marked noindex")
@@ -129,8 +190,9 @@ def inspect_site(site):
             errors.append("Robots file must permit crawling and identify the sitemap")
         sitemap = ET.parse(site / "sitemap.xml")
         locations = [e.text for e in sitemap.findall(".//{*}loc")]
-        if locations != [ORIGIN + "/"]:
-            errors.append("Sitemap must identify the current single-page site only")
+        expected = {ORIGIN + route for route in INDEXABLE_ROUTES}
+        if len(locations) != len(set(locations)) or set(locations) != expected:
+            errors.append("Sitemap must match declared indexable routes without duplicates")
     except (OSError, ET.ParseError) as exc:
         errors.append(f"Search metadata unreadable: {exc}")
     return files, errors

@@ -8,6 +8,7 @@ GitHub repository: [PsychoPanda1/southern-flow-plumbing](https://github.com/Psyc
 | File | Purpose |
 | --- | --- |
 | `site/index.html` | Public copy, photos, contact links, SEO and structured data |
+| `site/services/*/index.html` | Water-heater and renovation service pages |
 | `site/styles.css` | Branding, responsive layouts, focus styling and error page |
 | `site/script.js` | Mobile menu, mobile call links, phone copying and year |
 | `site/404.html` | Branded recovery page for missing URLs |
@@ -26,6 +27,7 @@ No npm installation or application server is required for the public website. Wi
 python scripts/check_site.py
 python -m unittest discover -s tests
 node --check site/script.js
+node --test tests/site-interactions.test.mjs
 python -m http.server 8765 --directory site
 ```
 
@@ -39,6 +41,8 @@ python -m http.server 8765 --directory build/public
 ```
 
 The output directory must be empty. Choose a new folder on subsequent runs if the existing package is still needed. Packaging follows the page's local dependencies, including responsive `srcset` images, CSS references and business/social image metadata. Unreferenced source originals remain in the repository but are not packaged.
+
+The JavaScript tests exercise the shipped menu, responsive call links and clipboard feedback using a small simulated DOM. Python checks include solid-color text contrast. These are regression checks, not proof of browser layout, screen-reader compatibility or telephone delivery. Use the [closeout checklist](docs/closeout-checklist.md) for real-device verification and owner decisions.
 
 ## Publish an update
 
@@ -58,7 +62,7 @@ An update to `main` publishes automatically. The README and this workflow do not
 - Primary address: `https://southernflowplumbingllc.com/`.
 - HTTPS enforcement was enabled on September 6, 2026. Recheck it after domain or hosting changes.
 - Preserve the Search Console verification TXT record when editing DNS. Never commit its value or account credentials.
-- Sitemap: `https://southernflowplumbingllc.com/sitemap.xml`. The one-page site needs one canonical entry; an error page should not be listed.
+- Sitemap: `https://southernflowplumbingllc.com/sitemap.xml`. Its entries must match `INDEXABLE_ROUTES` in `scripts/check_site.py`: homepage, water heaters and renovations in this local revision. Do not list the error page. This inventory describes source ready for review, not proof of publication.
 - Change sitemap `lastmod` when the indexed content meaningfully changes, not merely because the deployment ran.
 
 ## Maintenance and owner decisions
@@ -70,6 +74,12 @@ Before changing the corresponding public claims, obtain owner confirmation of th
 The site currently has no estimate form, analytics integration or application database. No customer submissions are collected by this application. Phone calls and Instagram messages are handled by their respective services. Add tracking, a form, or a new inbox only after its purpose and recipient are agreed.
 
 Keep the local owner PDF and preview image private unless public publication is requested. Domain renewal/payment arrangements belong in the owner handoff, not in the site deployment.
+
+### Service-page maintenance
+
+The two service pages reuse established project assets and original Instagram links. See [service-page sources and release checks](docs/service-pages.md). Keep independent projects labeled as separate examples. Adding a route requires a real page, a unique title/description/canonical, matching social metadata, homepage navigation, an `INDEXABLE_ROUTES` entry and a sitemap entry. Nested pages use root-relative asset URLs so they also work when opened directly. Run the full checks before packaging.
+
+The research report identified a GitHub Pages commercial-use policy question. No migration or terms clearance is complete. Resolve hosting suitability with the owner before public release or adding business functions; preserve the repository, custom domain, and private records throughout any approved change.
 
 ## Recover from an incorrect update
 

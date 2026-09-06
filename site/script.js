@@ -1,5 +1,12 @@
 const menuButton = document.querySelector(".menu-button");
 const navigation = document.querySelector(".site-nav");
+const menuQuery = window.matchMedia("(max-width: 900px)");
+
+const closeMenu = (restoreFocus = false) => {
+  navigation?.classList.remove("open");
+  menuButton?.setAttribute("aria-expanded", "false");
+  if (restoreFocus) menuButton?.focus();
+};
 
 menuButton?.addEventListener("click", () => {
   const isOpen = navigation?.classList.toggle("open") ?? false;
@@ -8,24 +15,44 @@ menuButton?.addEventListener("click", () => {
 
 navigation?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => {
-    navigation.classList.remove("open");
-    menuButton?.setAttribute("aria-expanded", "false");
+    const wasOpen = navigation.classList.contains("open");
+    const href = link.getAttribute("href");
+    closeMenu(wasOpen && href?.startsWith("tel:"));
+    // Move keyboard focus out of the now-hidden mobile menu, without changing
+    // the link's native scrolling or telephone action.
+    if (wasOpen && href?.startsWith("#")) {
+      const destination = document.getElementById(href.slice(1));
+      if (destination) {
+        if (!destination.hasAttribute("tabindex")) destination.setAttribute("tabindex", "-1");
+        destination.focus({ preventScroll: true });
+      }
+    }
   });
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape" || !navigation?.classList.contains("open")) return;
-  navigation.classList.remove("open");
-  menuButton?.setAttribute("aria-expanded", "false");
-  menuButton?.focus();
+  closeMenu(true);
 });
 
 document.addEventListener("click", (event) => {
   if (!navigation?.classList.contains("open")) return;
   const target = event.target;
   if (!(target instanceof Node) || navigation.contains(target) || menuButton?.contains(target)) return;
-  navigation.classList.remove("open");
-  menuButton?.setAttribute("aria-expanded", "false");
+  closeMenu();
+});
+
+document.addEventListener("focusin", (event) => {
+  if (!navigation?.classList.contains("open")) return;
+  const target = event.target;
+  if (target instanceof Node && !navigation.contains(target) && !menuButton?.contains(target)) closeMenu();
+});
+
+menuQuery.addEventListener("change", () => {
+  const focusWillBeHidden = menuQuery.matches && navigation?.contains(document.activeElement);
+  const focusWasOnButton = document.activeElement === menuButton;
+  closeMenu(focusWillBeHidden);
+  if (!menuQuery.matches && focusWasOnButton) navigation?.querySelector("a")?.focus();
 });
 
 const year = document.querySelector("#year");
